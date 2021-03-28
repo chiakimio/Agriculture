@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.ag.dao.ScatterMapDao">
+
+    <!--散点图-->
+
+    <!-- 查询某个指标所有经纬度和数值-->
+    <select id="indexLongDimenZhi" resultType="java.util.Map">
+        select DISTINCT longitude, dimension  , ${aIndex}  from ag_data where ${aIndex}  !='';
+    </select>
+
+    <!-- 查询某个指标某个物种所有经纬度和数值-->
+    <select id="indexSpeciesLongDimenZhi" resultType="java.util.Map">
+        select DISTINCT longitude,dimension , ${aIndex}  from ag_data
+        where ${aIndex}  !=''   and species = #{special} ;
+    </select>
+
+    <!-- 查询某个指标某年份所有经纬度和数值-->
+    <select id="indexYearLongDimenZhi" resultType="java.util.Map">
+        select DISTINCT longitude,dimension , ${aIndex}  from ag_data
+        where ${aIndex}  !=''   and yearJc = #{yearJc} ;
+    </select>
+
+    <!-- 查询某个指标某物种某年份所有经纬度和数值-->
+    <select id="indexSpeciesYearLongDimenZhi" resultType="java.util.Map">
+        select DISTINCT longitude,dimension , ${aIndex}  from ag_data
+        where ${aIndex}  !=''   and species = #{special} and yearJc = #{yearJc};
+    </select>
+
+</mapper>
