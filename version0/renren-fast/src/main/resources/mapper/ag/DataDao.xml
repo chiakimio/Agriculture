@@ -1,0 +1,535 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.ag.dao.DataDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.ag.entity.DataEntity" id="dataMap">
+        <result property="id" column="id"/>
+        <result property="datafrom" column="dataFrom"/>
+        <result property="countrycn" column="countryCn"/>
+        <result property="countryen" column="countryEn"/>
+        <result property="provincecn" column="provinceCn"/>
+        <result property="provinceen" column="provinceEn"/>
+        <result property="yearjc" column="yearJc"/>
+        <result property="species" column="species"/>
+        <result property="longitude" column="longitude"/>
+        <result property="dimension" column="dimension"/>
+        <result property="δ13c" column="δ13C"/>
+        <result property="δ15n" column="δ15N"/>
+        <result property="δ2h" column="δ2H"/>
+        <result property="δ18o" column="δ18O"/>
+        <result property="δ32s" column="δ32S"/>
+    </resultMap>
+
+
+    <!-- 查询表中所有数据-->
+    <select id="allData" resultType="java.util.Map">
+        SELECT * from ag_data;
+    </select>
+
+    <!-- 查询数据管理的数据关系,国家-省份-物种-年份-数量-->
+    <select id="dataRelation" resultType="java.util.Map">
+        select countryCn,provinceCn,species,yearJc, count(1) from ag_data  WHERE countryCn in(select distinct  countryCn from ag_data )
+        group by  countryCn,provinceCn,species,yearJc;
+    </select>
+
+    <!-- 查询国家-年份-数量的关系-->
+    <select id="countryYearNum" resultType="java.util.Map">
+        select
+            res1.countryCn countryCn,
+            res1.yearJc yearJc,
+            if(res2.num is null, 0, res2.num) num
+        from
+            (
+                select * from
+                                 (select distinct countryCn from ag_data) a,
+                                 (select distinct yearJc from ag_data) b
+            ) res1
+                left join
+            (
+                select countryCn, yearJc, count(1) num from ag_data group by countryCn, yearJc
+            ) res2
+            on res1.countryCn = res2.countryCn and res1.yearJc = res2.yearJc
+        order by countryCn, yearJc;
+    </select>
+
+    <!-- 查询所有国家-->
+    <select id="allCountry" resultType="java.util.Map">
+        select distinct  countryCn from ag_data ORDER BY countryCn
+    </select>
+    <!-- 查询所有省份-->
+    <select id="allProvince" resultType="java.util.Map">
+        select distinct  provinceCn from ag_data
+    </select>
+    <!-- 查询所有地级市-->
+    <select id="allCity" resultType="java.util.Map">
+        select distinct  cityCn from ag_data
+    </select>
+
+    <!-- 查询所有年份-->
+    <select id="allYear" resultType="java.util.Map">
+        select distinct  yearJc from ag_data
+    </select>
+
+    <!-- 查询所有物种-->
+    <select id="allSpecial" resultType="java.util.Map">
+        select distinct  species from ag_data ORDER BY species
+    </select>
+
+
+
+    <!-- 查询所有指标-->
+    <select id="allIndex" resultType="java.util.Map">
+        select column_name from information_schema.columns where table_schema='agriculture' and table_name='ag_data';
+    </select>
+
+    <!-- 查询所有机构-->
+    <select id="allOrganization" resultType="java.util.Map">
+        select distinct  dataFrom from ag_data
+    </select>
+
+    <!-- 传入国家-查询省份-年份-数量的关系-->
+    <select id="provinceYearNum" resultType="java.util.Map">
+        select
+            res1.provinceCn provinceCn,
+            res1.yearJc yearJc,
+            if(res2.num is null, 0, res2.num) num
+        from
+            (
+                select * from
+                                 (select distinct provinceCn from ag_data where countryCn = #{countryCn}) a,
+                                 (select distinct yearJc from ag_data ) b
+            ) res1
+                left join
+            (
+                select provinceCn, yearJc, count(1) num from ag_data where countryCn = #{countryCn} group by provinceCn, yearJc
+            ) res2
+            on res1.provinceCn = res2.provinceCn and res1.yearJc = res2.yearJc
+        order by provinceCn, yearJc
+
+        ;
+    </select>
+
+    <!-- 查询国家-省份-->
+    <select id="countryProvince" resultType="java.util.Map">
+        select distinct  provinceCn from ag_data where  countryCn = #{countryCn} ORDER BY provinceCn ;
+    </select>
+
+    <!-- 查询国家-地级市-->
+    <select id="countryCity" resultType="java.util.Map">
+        select distinct  cityCn from ag_data where  countryCn = #{countryCn} ORDER BY cityCn ;
+    </select>
+
+
+    <!-- 查询国家-年份-->
+    <select id="countryYear" resultType="java.util.Map">
+        select distinct  yearJc from ag_data where countryCn = #{countryCn} ORDER BY yearJc  ;
+    </select>
+
+    <!-- 查询国家-物种-->
+    <select id="countrySpecial" resultType="java.util.Map">
+        select distinct  species from ag_data where countryCn = #{countryCn} ORDER BY species;
+    </select>
+
+    <!-- 第三层接口-->
+
+    <!-- 传入国家-省份-查询城市-年份-数量的关系-->
+    <select id="cityYearNum" resultType="java.util.Map">
+        select
+            res1.cityCn cityCn,
+            res1.yearJc yearJc,
+            if(res2.num is null, 0, res2.num) num
+        from
+            (
+                select * from
+                             (select distinct cityCn from ag_data where countryCn = #{countryCn}  and provinceCn = #{provinceCn} ) a,
+                             (select distinct yearJc from ag_data   ) b
+            ) res1
+                left join
+            (
+                select cityCn, yearJc, count(1) num from ag_data where countryCn = #{countryCn}  and provinceCn = #{provinceCn} group by cityCn, yearJc
+            ) res2
+            on res1.cityCn = res2.cityCn and res1.yearJc = res2.yearJc
+        order by cityCn, yearJc
+        ;
+    </select>
+
+    <!-- 传入国家-省份-查询-地级市-->
+    <select id="countryProvinceCity" resultType="java.util.Map">
+        select distinct  cityCn from ag_data where countryCn = #{countryCn} and provinceCn = #{provinceCn}  ORDER BY cityCn  ;
+    </select>
+
+    <!-- 传入国家-省份-查询-年份-->
+    <select id="countryProvinceYear" resultType="java.util.Map">
+        select distinct  yearJc from ag_data where countryCn = #{countryCn} and provinceCn = #{provinceCn}  ORDER BY yearJc  ;
+    </select>
+
+    <!-- 传入国家-省份查询-物种-->
+    <select id="countryProvinceSpecial" resultType="java.util.Map">
+        select distinct  species from ag_data where countryCn = #{countryCn}  and provinceCn = #{provinceCn}  ORDER BY species;
+    </select>
+
+    <!-- 第四层接口-->
+
+    <!-- 传入国家-省份-地级市-查询物种-年份-数量的关系-->
+    <select id="specialYearCityNum" resultType="java.util.Map">
+        select
+            res1.species species,
+            res1.yearJc yearJc,
+            if(res2.num is null, 0, res2.num) num
+        from
+            (
+                select * from
+                             (select distinct species from ag_data where countryCn = #{countryCn}  and provinceCn = #{provinceCn} and cityCn =  #{cityCn} ) a,
+                             (select distinct yearJc from ag_data   ) b
+            ) res1
+                left join
+            (
+                select species, yearJc, count(1) num from ag_data where countryCn = #{countryCn}  and provinceCn = #{provinceCn} and cityCn =  #{cityCn} group by species, yearJc
+            ) res2
+            on res1.species = res2.species and res1.yearJc = res2.yearJc
+        order by species, yearJc
+        ;
+    </select>
+
+    <!-- 传入国家-省份-地级市查询-年份-->
+    <select id="countryProvinceCityYear" resultType="java.util.Map">
+        select distinct  yearJc from ag_data where countryCn = #{countryCn} and provinceCn = #{provinceCn} and cityCn = #{cityCn}  ORDER BY yearJc  ;
+    </select>
+
+    <!-- 传入国家-省份-地级市查询-物种-->
+    <select id="countryProvinceCitySpecial" resultType="java.util.Map">
+        select distinct  species from ag_data where countryCn = #{countryCn}  and provinceCn = #{provinceCn}  and cityCn = #{cityCn}  ORDER BY species;
+    </select>
+
+    <!--第五层-->
+    <!-- 传入物种查询-所有国家的所以年份的数量-->
+    <select id="specialCountryYearNum" resultType="java.util.Map">
+        select
+            res1.countryCn countryCn,
+            res1.yearJc yearJc,
+            if(res2.num is null, 0, res2.num) num
+        from
+            (
+                select * from
+                                 (select distinct countryCn from ag_data where species = #{species} ) a,
+                                 (select distinct yearJc from ag_data where species = #{species} ) b
+            ) res1
+                left join
+            (
+                select countryCn, yearJc, count(1) num from ag_data where species = #{species} group by countryCn, yearJc
+            ) res2
+            on res1.countryCn = res2.countryCn and res1.yearJc = res2.yearJc
+        order by countryCn, yearJc
+        ;
+    </select>
+
+    <!-- 传入物种查国家-->
+    <select id="specialCountry" resultType="java.util.Map">
+        select distinct  countryCn from ag_data where species = #{species} ORDER BY countryCn;
+    </select>
+    <!-- 传入物种查省份-->
+    <select id="specialProvince" resultType="java.util.Map">
+        select distinct  provinceCn from ag_data where species = #{species} ORDER BY provinceCn;
+    </select>
+    <!-- 传入物种查市-->
+    <select id="specialCity" resultType="java.util.Map">
+        select distinct  cityCn from ag_data where species = #{species} ORDER BY cityCn;
+    </select>
+
+    <!-- 传入物种查年份-->
+    <select id="specialYear" resultType="java.util.Map">
+        select distinct  yearJc from ag_data where species = #{species} ORDER BY yearJc;
+    </select>
+
+    <!-- 传入年份查国家-->
+    <select id="yearCountry" resultType="java.util.Map">
+        select distinct  countryCn from ag_data where yearJc = #{yearJc} ORDER BY countryCn;
+    </select>
+    <!-- 传入年份查省份-->
+    <select id="yearProvince" resultType="java.util.Map">
+        select distinct  provinceCn from ag_data where yearJc = #{yearJc} ORDER BY provinceCn;
+    </select>
+    <!-- 传入年份查市-->
+    <select id="yearCity" resultType="java.util.Map">
+        select distinct  cityCn from ag_data where yearJc = #{yearJc} ORDER BY cityCn;
+    </select>
+
+    <!-- 传入年份查物种-->
+    <select id="yearSpecial" resultType="java.util.Map">
+        select distinct  species from ag_data where yearJc = #{yearJc} ORDER BY species;
+    </select>
+
+
+
+    <!--地图可视化-->
+
+    <!--世界-->
+    <!-- 查询某一指标所有国家和对应的平均值-->
+    <select id="columnCountryAndAvgData" resultType="java.util.Map">
+        select DISTINCT  countryEn as location,AVG(${aIndex}) as dataValue  from ag_data where ${aIndex}  !=''  and  countryEn in(select distinct  countryEn from ag_data) group by  countryEn;
+    </select>
+    <!-- 查询某一指标所有国家某一物种和对应的平均值-->
+    <select id="columnCountrySpecialAndAvgData" resultType="java.util.Map">
+        select DISTINCT  countryEn as location,AVG(${aIndex}) as dataValue from ag_data
+        where ${aIndex}  !=''  and  countryEn in(select distinct  countryEn from ag_data)
+        and species = #{special}
+        group by  countryEn;
+    </select>
+    <!-- 查询某一指标所有国家某一年和对应的平均值-->
+    <select id="columnCountryYearAndAvgData" resultType="java.util.Map">
+        select DISTINCT  countryEn as location,AVG(${aIndex}) as dataValue from ag_data where ${aIndex}  !=''  and  countryEn in(select distinct  countryEn from ag_data) and yearJc = #{yearJc}  group by  countryEn;
+    </select>
+    <!-- 查询某一指标所有国家某一物种某一年和对应的平均值-->
+    <select id="columnCountrySpecialYearAndAvgData" resultType="java.util.Map">
+        select DISTINCT  countryEn as location,AVG(${aIndex}) as dataValue from ag_data where ${aIndex}  !=''  and  countryEn in(select distinct  countryEn from ag_data) and species = #{special} and yearJc = #{yearJc} group by  countryEn;
+    </select>
+
+    <!--国家-->
+    <!-- 查询某一指标某一国家  所有省份对应的平均值-->
+    <select id="columnProvinceAndAvgData" resultType="java.util.Map">
+        select provinceEn as location,AVG(${aIndex}) as dataValue from ag_data
+        where ${aIndex} !=''  and provinceEn in(select distinct  provinceEn from ag_data )
+            and countryEn = #{countryEn}
+        GROUP BY provinceEn;
+    </select>
+    <!-- 查询某一指标某一国家某一物种  所有省份对应的平均值-->
+    <select id="columnProvinceSpecialAndAvgData" resultType="java.util.Map">
+        select provinceEn as location,AVG(${aIndex}) as dataValue from ag_data
+        where ${aIndex} !=''  and provinceEn in(select distinct  provinceEn from ag_data )
+            and countryEn = #{countryEn}
+            and species = #{special}
+        GROUP BY provinceEn;
+    </select>
+    <!-- 查询某一指标某一国家某一年  所有省份对应的平均值-->
+    <select id="columnProvinceYearAndAvgData" resultType="java.util.Map">
+        select provinceEn as location,AVG(${aIndex}) as dataValue from ag_data
+        where ${aIndex} !=''  and provinceEn in(select distinct  provinceEn from ag_data )
+            and countryEn = #{countryEn}
+            and yearJc = #{yearJc}
+        GROUP BY provinceEn;
+    </select>
+    <!-- 查询某一指标某一国家某一物种某一年  所有省份对应的平均值-->
+    <select id="columnProvinceSpecialYearAndAvgData" resultType="java.util.Map">
+        select provinceEn as location,AVG(${aIndex}) as dataValue from ag_data
+        where ${aIndex} !=''  and provinceEn in(select distinct  provinceEn from ag_data )
+            and countryEn = #{countryEn}
+            and species = #{special}
+            and yearJc = #{yearJc}
+        GROUP BY provinceEn;
+    </select>
+
+    <!--省-->
+    <!-- 查询某一指标某一国家某一省 对应的平均值-->
+    <select id="columnCityAndAvgData" resultType="java.util.Map">
+        select cityEn as location,AVG(${aIndex}) as dataValue from ag_data
+        where ${aIndex} !=''  and cityEn in(select distinct  cityEn from ag_data )
+            and provinceEn = #{provinceEn}
+        GROUP BY cityEn;
+    </select>
+    <!-- 查询某一指标某一省 某一物种  所有省份对应的平均值-->
+    <select id="columnCitySpecialAndAvgData" resultType="java.util.Map">
+        select cityEn as location,AVG(${aIndex}) as dataValue from ag_data
+        where ${aIndex} !=''  and cityEn in(select distinct  cityEn from ag_data )
+            and provinceEn = #{provinceEn}
+            and species = #{special}
+        GROUP BY cityEn;
+    </select>
+    <!-- 查询某一指标某一省某一年  所有省份对应的平均值-->
+    <select id="columnCityYearAndAvgData" resultType="java.util.Map">
+        select cityEn as location,AVG(${aIndex}) as dataValue from ag_data
+        where ${aIndex} !=''  and cityEn in(select distinct  cityEn from ag_data )
+            and provinceEn = #{provinceEn}
+          and yearJc = #{yearJc}
+        GROUP BY cityEn;
+    </select>
+    <!-- 查询某一指标某一省某一物种某一年  所有省份对应的平均值-->
+    <select id="columnCitySpecialYearAndAvgData" resultType="java.util.Map">
+        select cityEn as location,AVG(${aIndex}) as dataValue from ag_data
+        where ${aIndex} !=''  and cityEn in(select distinct  cityEn from ag_data )
+            and provinceEn = #{provinceEn}
+          and species = #{special}
+          and yearJc = #{yearJc}
+        GROUP BY cityEn;
+    </select>
+
+
+
+    <!--误差棒-->
+
+    <!-- 查询所有指标的数据-  select DISTINCT  ${aIndex}  from ag_data where ${aIndex}  !='';    -->
+    <select id="allIndexZhi" resultType="java.util.Map">
+        select DISTINCT  if(max(${aIndex}) is null ,0,max(${aIndex})) max
+            ,if(min(${aIndex}) is null ,0,min(${aIndex})) min
+            ,if(avg(${aIndex}) is null ,0,avg(${aIndex})) avg
+        from ag_data
+        where ${aIndex}  !='';
+
+    </select>
+
+    <!-- 查询某一国家  所有指标的数据-->
+    <select id="countryAllIndexZhi" resultType="java.util.Map">
+        select DISTINCT  if(max(${aIndex}) is null ,0,max(${aIndex})) max
+            ,if(min(${aIndex}) is null ,0,min(${aIndex})) min
+            ,if(avg(${aIndex}) is null ,0,avg(${aIndex})) avg
+        from ag_data
+        where ${aIndex}  !='' and countryCn = #{countryCn} ;
+    </select>
+
+    <!-- 查询某一国家某一物种  所有指标的数据-->
+    <select id="countrySpeciesAllIndexZhi" resultType="java.util.Map">
+        select DISTINCT  if(max(${aIndex}) is null ,0,max(${aIndex})) max
+            ,if(min(${aIndex}) is null ,0,min(${aIndex})) min
+            ,if(avg(${aIndex}) is null ,0,avg(${aIndex})) avg
+        from ag_data
+        where ${aIndex}  !='' and countryCn = #{countryCn} and species = #{species};
+    </select>
+    <!-- 查询某一国家某一年份  所有指标的数据-->
+    <select id="countryYearAllIndexZhi" resultType="java.util.Map">
+        select DISTINCT  if(max(${aIndex}) is null ,0,max(${aIndex})) max
+            ,if(min(${aIndex}) is null ,0,min(${aIndex})) min
+            ,if(avg(${aIndex}) is null ,0,avg(${aIndex})) avg
+        from ag_data
+        where ${aIndex}  !='' and countryCn = #{countryCn} and yearJc = #{yearJc};
+    </select>
+
+    <!-- 查询某一国家某一年份某一物种  所有指标的数据-->
+    <select id="countryYearSpeciesAllIndexZhi" resultType="java.util.Map">
+        select DISTINCT  if(max(${aIndex}) is null ,0,max(${aIndex})) max
+            ,if(min(${aIndex}) is null ,0,min(${aIndex})) min
+            ,if(avg(${aIndex}) is null ,0,avg(${aIndex})) avg
+        from ag_data
+        where ${aIndex}  !='' and countryCn = #{countryCn} and yearJc = #{yearJc} and species = #{species};
+    </select>
+
+    <!-- 查询某一国家某一省份  所有指标的数据-->
+    <select id="countryProvinceAllIndexZhi" resultType="java.util.Map">
+        select DISTINCT  if(max(${aIndex}) is null ,0,max(${aIndex})) max
+            ,if(min(${aIndex}) is null ,0,min(${aIndex})) min
+            ,if(avg(${aIndex}) is null ,0,avg(${aIndex})) avg
+        from ag_data
+        where ${aIndex}  !='' and countryCn = #{countryCn} and provinceCn = #{provinceCn} ;
+    </select>
+
+    <!-- 查询某一国家某一省份某一物种  所有指标的数据-->
+    <select id="countryProvinceSpeciesAllIndexZhi" resultType="java.util.Map">
+        select DISTINCT  if(max(${aIndex}) is null ,0,max(${aIndex})) max
+            ,if(min(${aIndex}) is null ,0,min(${aIndex})) min
+            ,if(avg(${aIndex}) is null ,0,avg(${aIndex})) avg
+        from ag_data
+        where ${aIndex}  !='' and countryCn = #{countryCn} and provinceCn = #{provinceCn} and species = #{species};
+    </select>
+
+    <!-- 查询某一国家某一省份某一年份  所有指标的数据-->
+    <select id="countryProvinceYearAllIndexZhi" resultType="java.util.Map">
+        select DISTINCT  if(max(${aIndex}) is null ,0,max(${aIndex})) max
+            ,if(min(${aIndex}) is null ,0,min(${aIndex})) min
+            ,if(avg(${aIndex}) is null ,0,avg(${aIndex})) avg
+        from ag_data
+        where ${aIndex}  !='' and countryCn = #{countryCn} and provinceCn = #{provinceCn} and yearJc = #{yearJc};
+    </select>
+
+    <!-- 查询某一国家某一省份某一年份某一物种  所有指标的数据-->
+    <select id="countryProvinceYearSpeciesAllIndexZhi" resultType="java.util.Map">
+        select DISTINCT  if(max(${aIndex}) is null ,0,max(${aIndex})) max
+            ,if(min(${aIndex}) is null ,0,min(${aIndex})) min
+            ,if(avg(${aIndex}) is null ,0,avg(${aIndex})) avg
+        from ag_data
+        where ${aIndex}  !='' and countryCn = #{countryCn} and provinceCn = #{provinceCn} and yearJc = #{yearJc} and species = #{species};
+    </select>
+
+    <!-- 查询某一国家某一省份某一地市  所有指标的数据-->
+    <select id="countryProvinceCityAllIndexZhi" resultType="java.util.Map">
+        select DISTINCT  if(max(${aIndex}) is null ,0,max(${aIndex})) max
+            ,if(min(${aIndex}) is null ,0,min(${aIndex})) min
+            ,if(avg(${aIndex}) is null ,0,avg(${aIndex})) avg
+        from ag_data
+        where ${aIndex}  !='' and countryCn = #{countryCn} and provinceCn = #{provinceCn} and cityCn =#{cityCn};
+    </select>
+
+    <!-- 查询某一国家某一省份某一地市某一年份  所有指标的数据-->
+    <select id="countryProvinceCityYearAllIndexZhi" resultType="java.util.Map">
+        select DISTINCT  if(max(${aIndex}) is null ,0,max(${aIndex})) max
+            ,if(min(${aIndex}) is null ,0,min(${aIndex})) min
+            ,if(avg(${aIndex}) is null ,0,avg(${aIndex})) avg
+        from ag_data
+        where ${aIndex}  !=''and countryCn = #{countryCn} and provinceCn = #{provinceCn} and cityCn =#{cityCn} and yearJc = #{yearJc};
+    </select>
+
+    <!-- 查询某一国家某一省份某一地市某一物种  所有指标的数据-->
+    <select id="countryProvinceCitySpeciesAllIndexZhi" resultType="java.util.Map">
+        select DISTINCT  if(max(${aIndex}) is null ,0,max(${aIndex})) max
+            ,if(min(${aIndex}) is null ,0,min(${aIndex})) min
+            ,if(avg(${aIndex}) is null ,0,avg(${aIndex})) avg
+        from ag_data
+        where ${aIndex}  !='' and countryCn = #{countryCn} and provinceCn = #{provinceCn} and cityCn =#{cityCn} and  species =#{species} ;
+    </select>
+
+    <!-- 查询某一国家某一省份某一地市某一物种某一年  所有指标的数据-->
+    <select id="countryProvinceCitySpeciesYearAllIndexZhi" resultType="java.util.Map">
+        select DISTINCT  if(max(${aIndex}) is null ,0,max(${aIndex})) max
+            ,if(min(${aIndex}) is null ,0,min(${aIndex})) min
+            ,if(avg(${aIndex}) is null ,0,avg(${aIndex})) avg
+        from ag_data
+        where ${aIndex}  !='' and countryCn = #{countryCn} and provinceCn = #{provinceCn} and cityCn =#{cityCn} and yearJc = #{yearJc} and  species =#{species}   ;
+    </select>
+
+    <!-- 查询某一物种  所有指标的数据-->
+    <select id="speciesAllIndexZhi" resultType="java.util.Map">
+        select DISTINCT  if(max(${aIndex}) is null ,0,max(${aIndex})) max
+            ,if(min(${aIndex}) is null ,0,min(${aIndex})) min
+            ,if(avg(${aIndex}) is null ,0,avg(${aIndex})) avg
+        from ag_data
+        where ${aIndex}  !=''  and  species =#{species} ;
+    </select>
+
+    <!-- 查询某一物种 某一年 所有指标的数据-->
+    <select id="speciesYearAllIndexZhi" resultType="java.util.Map">
+        select DISTINCT  if(max(${aIndex}) is null ,0,max(${aIndex})) max
+            ,if(min(${aIndex}) is null ,0,min(${aIndex})) min
+            ,if(avg(${aIndex}) is null ,0,avg(${aIndex})) avg
+        from ag_data
+        where ${aIndex}  !='' and  species =#{species} and yearJc = #{yearJc};
+    </select>
+
+    <!-- 查询某一物种 某一年 所有指标的数据-->
+    <select id="yearAllIndexZhi" resultType="java.util.Map">
+        select DISTINCT  if(max(${aIndex}) is null ,0,max(${aIndex})) max
+            ,if(min(${aIndex}) is null ,0,min(${aIndex})) min
+                      ,if(avg(${aIndex}) is null ,0,avg(${aIndex})) avg
+        from ag_data
+        where ${aIndex}  !='' and yearJc = #{yearJc};
+    </select>
+
+
+    <!--散点图-->
+
+    <!-- 查询某个指标所有经纬度和数值-->
+    <select id="indexLongDimenZhi" resultType="java.util.Map">
+        select DISTINCT longitude, dimension  , ${aIndex}  from ag_data where ${aIndex}  !='';
+    </select>
+
+    <!-- 查询某个指标某个物种所有经纬度和数值-->
+    <select id="indexSpeciesLongDimenZhi" resultType="java.util.Map">
+        select DISTINCT longitude,dimension , ${aIndex}  from ag_data
+        where ${aIndex}  !=''   and species = #{special} ;
+    </select>
+
+    <!-- 查询某个指标某年份所有经纬度和数值-->
+    <select id="indexYearLongDimenZhi" resultType="java.util.Map">
+        select DISTINCT longitude,dimension , ${aIndex}  from ag_data
+        where ${aIndex}  !=''   and yearJc = #{yearJc} ;
+    </select>
+
+    <!-- 查询某个指标某物种某年份所有经纬度和数值-->
+    <select id="indexSpeciesYearLongDimenZhi" resultType="java.util.Map">
+        select DISTINCT longitude,dimension , ${aIndex}  from ag_data
+        where ${aIndex}  !=''   and species = #{special} and yearJc = #{yearJc};
+    </select>
+
+
+
+
+
+</mapper>

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="renren-fast:jar" />
+    </artifacts-to-build>
+  </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="67942a71-4d2b-43d3-a293-be53f7146f83" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="localRepository" value="E:\code_path\apache-maven-3.6.3\repository" />
+        <option name="mavenHome" value="E:\code_path\apache-maven-3.6.3" />
+        <option name="userSettingsFile" value="E:\code_path\apache-maven-3.6.3\settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="downloadSourcesAutomatically" value="true" />
+        <option name="jdkForImporter" value="1.8" />
+      </MavenImportingSettings>
+    </option>
+  </component>
+  <component name="MavenRunner">
+    <option name="vmOptions" value="-Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true" />
+  </component>
+  <component name="ProjectId" id="1nuvrr5iR1Phv5lWCkAeZpQ990n" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RequestMappingsPanelOrder0" value="0" />
+    <property name="RequestMappingsPanelOrder1" value="1" />
+    <property name="RequestMappingsPanelWidth0" value="75" />
+    <property name="RequestMappingsPanelWidth1" value="75" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/pom.xml" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="MavenSettings" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\code\agriculture\renren\renren-fast\src\main\resources\mapper\ag" />
+      <recent name="D:\code\agriculture\renren\renren-fast\src\main" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="io.renren.modules.ag.service" />
+      <recent name="io.renren.modules.ag.service.impl" />
+      <recent name="io.renren.modules.ag.dao" />
+      <recent name="io.renren.modules.ag.controller" />
+      <recent name="io.renren.config" />
+    </key>
+  </component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="mvn clean" />
+      <command value="mvn install" />
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration name="RenrenApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="renren-fast" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="io.renren.RenrenApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="67942a71-4d2b-43d3-a293-be53f7146f83" name="Default Changelist" comment="" />
+      <created>1612252992386</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1612252992386</updated>
+      <workItem from="1612252994146" duration="648000" />
+      <workItem from="1612255726575" duration="652000" />
+      <workItem from="1612311865414" duration="1728000" />
+      <workItem from="1612352677190" duration="5182000" />
+      <workItem from="1612401274827" duration="1164000" />
+      <workItem from="1612485716255" duration="7945000" />
+      <workItem from="1612576057096" duration="12651000" />
+      <workItem from="1612658103779" duration="635000" />
+      <workItem from="1612874427091" duration="1935000" />
+      <workItem from="1612876391624" duration="484000" />
+      <workItem from="1612918180523" duration="2694000" />
+      <workItem from="1612923327700" duration="1019000" />
+      <workItem from="1612927450802" duration="1808000" />
+      <workItem from="1612942204729" duration="1842000" />
+      <workItem from="1614822491596" duration="8294000" />
+      <workItem from="1614926734920" duration="18303000" />
+      <workItem from="1615204201593" duration="7590000" />
+      <workItem from="1615211936503" duration="3000" />
+      <workItem from="1615255909618" duration="3728000" />
+      <workItem from="1615276180017" duration="368000" />
+      <workItem from="1615278051788" duration="1165000" />
+      <workItem from="1615279723012" duration="2778000" />
+      <workItem from="1615374154950" duration="628000" />
+      <workItem from="1615533746299" duration="6243000" />
+      <workItem from="1615545025580" duration="7165000" />
+      <workItem from="1615653133388" duration="6844000" />
+      <workItem from="1615686510396" duration="20829000" />
+      <workItem from="1615854328961" duration="11276000" />
+      <workItem from="1615871886052" duration="522000" />
+      <workItem from="1615883179220" duration="4310000" />
+      <workItem from="1615890605674" duration="1078000" />
+      <workItem from="1615895583356" duration="5480000" />
+      <workItem from="1615948277600" duration="4635000" />
+      <workItem from="1615962446942" duration="15951000" />
+      <workItem from="1616029752210" duration="24331000" />
+      <workItem from="1616243163412" duration="2142000" />
+      <workItem from="1616302822324" duration="2858000" />
+      <workItem from="1616330180079" duration="5667000" />
+      <workItem from="1616381087174" duration="3077000" />
+      <workItem from="1616458004611" duration="62000" />
+      <workItem from="1616458178605" duration="48000" />
+      <workItem from="1616491007954" duration="405000" />
+      <workItem from="1616492106754" duration="80000" />
+      <workItem from="1616576543649" duration="540000" />
+      <workItem from="1616581147790" duration="1006000" />
+      <workItem from="1616582331084" duration="993000" />
+      <workItem from="1616583350347" duration="194000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
